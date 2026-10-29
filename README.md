@@ -29,3 +29,7 @@ The game pauses when its browser tab loses focus. Sound is optional and off by d
 Open **StickJump.html** directly in a browser (double-click it on a computer). It includes the game, physics, and styles in a single file and makes no network requests. You can copy or share this file and play without Node.js, installation, or internet access. Some mobile file viewers do not execute JavaScript; use a browser that supports opening local HTML files, or the hosted GitHub Pages version on those devices.
 
 After editing the source files, run `npm run build` to refresh the standalone file. The normal `index.html` uses JavaScript modules and should be opened through a web server; `StickJump.html` is the version for direct file opening. Browser storage for local files varies: gameplay still works when personal-best persistence is unavailable.
+
+### Flight tuning
+
+The trampoline is 4.5 m wide. Initial and minimum rebound speed is 13.5 m/s, giving about 2.75 seconds of airtime and a 9.2 m first apex. Wind contributes 0.25 times its displayed value to lateral acceleration. Swimming adds a 3.2 m/s horizontal impulse in the facing direction every 0.4 seconds while held. Air drag slows sideways drift after release, so use short strokes to avoid overshooting. Recovery tests verify that an inward stroke plus an upright rotation can rescue a player 3 m to either side, 7 m above the bed, with outward momentum; these same trajectories miss without swimming. Late or badly oriented strokes can still miss.

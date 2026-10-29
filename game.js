@@ -1,4 +1,4 @@
-import {Game} from './physics.js';
+import {Game,TRAMPOLINE_HALF_WIDTH} from './physics.js';
 const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d');
 const game=new Game(),keys={},held=new Set();let mode='ready',last=0,accumulator=0,toastUntil=0,sound=false,audio;
 let width=900,height=370;
@@ -28,10 +28,10 @@ function draw(now){ctx.clearRect(0,0,width,height);const mobile=width<550,scale=
  // Quiet altitude lines, scaled with the camera so the entire flight stays visible.
  ctx.font='9px monospace';for(let m=2;m<=18;m+=2){const y=ground-m*scale;if(y<22)continue;line([[20,y],[width-20,y]],'#e9e7e1',1);ctx.fillStyle='#a4a29b';ctx.fillText(m+' m',24,y-5);}
  line([[20,ground+25],[width-20,ground+25]],'#dedcd5',1);
- const tw=1.65*scale,bend=game.contact>0?Math.sin(game.contact/.2*Math.PI)*8:0;
+ const tw=TRAMPOLINE_HALF_WIDTH*scale,bend=game.contact>0?Math.sin(game.contact/.2*Math.PI)*8:0;
  ctx.fillStyle='#e8e6e0';ctx.beginPath();ctx.ellipse(cx,ground+23,tw+14,5,0,0,Math.PI*2);ctx.fill();
  line([[cx-tw+5,ground],[cx-tw+11,ground+23],[cx-tw+23,ground+23]],'#333',3);line([[cx+tw-5,ground],[cx+tw-11,ground+23],[cx+tw-23,ground+23]],'#333',3);
- line([[cx-tw,ground],[cx,ground+bend],[cx+tw,ground]],'#222',4);for(let i=-1.4;i<1.5;i+=.28)line([[cx+i*scale,ground+2],[cx+i*scale+3,ground+6]],'#888',1);
+ line([[cx-tw,ground],[cx,ground+bend],[cx+tw,ground]],'#222',4);for(let i=-TRAMPOLINE_HALF_WIDTH+.15;i<TRAMPOLINE_HALF_WIDTH;i+=.28)line([[cx+i*scale,ground+2],[cx+i*scale+3,ground+6]],'#888',1);
  ctx.font='8px monospace';ctx.fillStyle='#888';ctx.textAlign='center';ctx.fillText('THE SWEET SPOT',cx,ground+44);ctx.textAlign='left';
  const px=cx+game.x*scale,py=ground-game.y*scale;ctx.save();ctx.translate(px,py-1.05*scale);ctx.rotate(game.angle);ctx.lineWidth=2.6;ctx.strokeStyle='#1b1b1b';
  const s=scale,stroke=game.time-game.strokeAt<.3,phase=Math.max(0,1-(game.time-game.strokeAt)/.3);const tuck=keys.left||keys.right;
