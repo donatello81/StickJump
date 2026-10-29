@@ -14,7 +14,7 @@ You can also serve this directory using any static web server. Set `PORT` to cha
 
 - **Left / Right:** hold to rotate backward / forward. Release early to control momentum.
 - **Down:** tap just before landing. A fresh press near contact gives the strongest bounce; holding does not keep refreshing the boost.
-- **Up:** swim in the direction of the stick-man's nose. Hold for repeated strokes. An upside-down stick-man swims left; an upright one swims right.
+- **Up:** swim horizontally toward the stick-man's head. Hold for repeated strokes. Head left and feet right gives leftward force; head right and feet left gives rightward force. The impulse scales with tilt: full power when horizontal, zero when upright or upside down. Swimming never adds vertical force.
 - **Space:** start, pause, resume or retry. **P / Escape:** pause or resume.
 - The four on-screen buttons support simultaneous touch input.
 
@@ -32,4 +32,4 @@ After editing the source files, run `npm run build` to refresh the standalone fi
 
 ### Flight tuning
 
-The trampoline is 4.5 m wide. Initial and minimum rebound speed is 13.5 m/s, giving about 2.75 seconds of airtime and a 9.2 m first apex. Wind contributes 0.25 times its displayed value to lateral acceleration. Swimming adds a 3.2 m/s horizontal impulse in the facing direction every 0.4 seconds while held. Air drag slows sideways drift after release, so use short strokes to avoid overshooting. Recovery tests verify that an inward stroke plus an upright rotation can rescue a player 3 m to either side, 7 m above the bed, with outward momentum; these same trajectories miss without swimming. Late or badly oriented strokes can still miss.
+The trampoline is 4.5 m wide. Initial and minimum rebound speed is 13.5 m/s, giving about 2.75 seconds of airtime and a 9.2 m first apex. Wind contributes 0.25 times its displayed value to lateral acceleration. Swimming adds a 3.2 m/s horizontal impulse multiplied by the horizontal component of the feet-to-head direction every 0.4 seconds while held. Air drag slows sideways drift after release, so use short strokes to avoid overshooting. Recovery tests verify that an inward stroke plus an upright rotation can rescue a player 3 m to either side, 7 m above the bed, with outward momentum; these same trajectories miss without swimming. Late or badly oriented strokes can still miss.

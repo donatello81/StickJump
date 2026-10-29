@@ -16,8 +16,8 @@
 <div id="overlay" class="overlay"><div class="overlay-card"><p class="eyebrow" id="overlay-tag">YOU + GRAVITY</p><h2 id="overlay-title">A leap of faith.</h2><p id="overlay-copy">Find your rhythm. Catch some air.<br>Come back down on your feet.</p><button class="primary" id="play">LET’S JUMP <span>↗</span></button><p class="overlay-note" id="overlay-note">10 JUMPS · ONE SHOT AT A HIGH SCORE</p></div></div></div>
 <div class="landing-strip"><span><i></i> <b id="status">READY WHEN YOU ARE</b></span><span id="hint">PRESS SPACE TO START</span></div>
 </section>
-<div class="touch-controls" aria-label="Touch game controls"><button data-key="ArrowLeft" aria-label="Flip backward">←<span>BACK FLIP</span></button><button data-key="ArrowRight" aria-label="Flip forward">→<span>FRONT FLIP</span></button><button data-key="ArrowDown" aria-label="Boost jump">↓<span>BOUNCE</span></button><button data-key="ArrowUp" aria-label="Swim facing direction">↑<span>SWIM</span></button></div>
-<section class="instructions"><div class="instruction-title"><p class="eyebrow">A QUICK FIELD GUIDE</p><h2>Less thinking.<br>More flying.</h2></div><div class="guide"><div class="keys"><kbd>←</kbd><kbd>→</kbd></div><h3>Make a rotation</h3><p>Hold to flip backward or forward.<br> Land upright to bank your tricks.</p></div><div class="guide"><div class="keys"><kbd>↓</kbd></div><h3>Catch the bounce</h3><p>Press just before your feet touch.<br> Better timing. Bigger air.</p></div><div class="guide"><div class="keys"><kbd>↑</kbd></div><h3>Swim through it</h3><p>Stroke toward the side you face.<br> Turn upside down to reverse it.</p></div></section>
+<div class="touch-controls" aria-label="Touch game controls"><button data-key="ArrowLeft" aria-label="Flip backward">←<span>BACK FLIP</span></button><button data-key="ArrowRight" aria-label="Flip forward">→<span>FRONT FLIP</span></button><button data-key="ArrowDown" aria-label="Boost jump">↓<span>BOUNCE</span></button><button data-key="ArrowUp" aria-label="Swim horizontally toward head">↑<span>SWIM</span></button></div>
+<section class="instructions"><div class="instruction-title"><p class="eyebrow">A QUICK FIELD GUIDE</p><h2>Less thinking.<br>More flying.</h2></div><div class="guide"><div class="keys"><kbd>←</kbd><kbd>→</kbd></div><h3>Make a rotation</h3><p>Hold to flip backward or forward.<br> Land upright to bank your tricks.</p></div><div class="guide"><div class="keys"><kbd>↓</kbd></div><h3>Catch the bounce</h3><p>Press just before your feet touch.<br> Better timing. Bigger air.</p></div><div class="guide"><div class="keys"><kbd>↑</kbd></div><h3>Swim through it</h3><p>Tilt your head left or right to swim.<br> Horizontal = full power. Upright = zero.</p></div></section>
 
 <footer><span>STAY LIGHT. LAND RIGHT.</span><span>BUILT FOR A LITTLE HANG TIME <i>✳︎</i></span></footer>
 </main><script>
@@ -39,7 +39,14 @@ class Game {
   const rotation=this.omega*dt;this.angle+=rotation;this.rotation+=rotation;
   // A full rotation in either direction must be completed before it scores.
   while(Math.abs(this.rotation)>=TAU){this.flips++;this.rotation-=Math.sign(this.rotation)*TAU;this.event={type:'flip',text:'FULL ROTATION +250'};}
-  if(keys.up && this.time-this.strokeAt>.4){this.strokeAt=this.time;this.vx+=Math.cos(this.angle)*3.2;this.event={type:'swim',text:Math.cos(this.angle)>=0?'STROKE →':'← STROKE'};}
+  if(keys.up && this.time-this.strokeAt>.4){
+   this.strokeAt=this.time;
+   // The rendered feet-to-head axis projects onto screen X as sin(angle).
+   // Ignore its vertical component: strokes never add lift or downward force.
+   const horizontal=Math.sin(this.angle);
+   this.vx+=horizontal*3.2;
+   this.event={type:'swim',text:Math.abs(horizontal)<.01?'STROKE · TILT TO MOVE':horizontal>0?'STROKE →':'← STROKE'};
+  }
   this.vx+=(this.wind*.25-this.vx*.65)*dt;this.x+=this.vx*dt;
   const oldY=this.y;this.vy-=9.81*dt;this.y+=this.vy*dt;
   this.peak=Math.max(this.peak,this.y);this.best=Math.max(this.best,this.y);
@@ -96,7 +103,7 @@ function draw(now){ctx.clearRect(0,0,width,height);const mobile=width<550,scale=
  const px=cx+game.x*scale,py=ground-game.y*scale;ctx.save();ctx.translate(px,py-1.05*scale);ctx.rotate(game.angle);ctx.lineWidth=2.6;ctx.strokeStyle='#1b1b1b';
  const s=scale,stroke=game.time-game.strokeAt<.3,phase=Math.max(0,1-(game.time-game.strokeAt)/.3);const tuck=keys.left||keys.right;
  ctx.beginPath();ctx.arc(0,-.67*s,.19*s,0,Math.PI*2);ctx.stroke();
- // A little nose makes the direction of every stroke visible.
+ // Face detail; swimming follows the body axis, not the nose.
  line([[.17*s,-.72*s],[.26*s,-.65*s],[.17*s,-.62*s]],'#222',1.8);
  line([[0,-.46*s],[0,.28*s]],'#222',2.6);
  const arm=stroke?phase*.5:0;

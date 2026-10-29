@@ -36,7 +36,7 @@ function draw(now){ctx.clearRect(0,0,width,height);const mobile=width<550,scale=
  const px=cx+game.x*scale,py=ground-game.y*scale;ctx.save();ctx.translate(px,py-1.05*scale);ctx.rotate(game.angle);ctx.lineWidth=2.6;ctx.strokeStyle='#1b1b1b';
  const s=scale,stroke=game.time-game.strokeAt<.3,phase=Math.max(0,1-(game.time-game.strokeAt)/.3);const tuck=keys.left||keys.right;
  ctx.beginPath();ctx.arc(0,-.67*s,.19*s,0,Math.PI*2);ctx.stroke();
- // A little nose makes the direction of every stroke visible.
+ // Face detail; swimming follows the body axis, not the nose.
  line([[.17*s,-.72*s],[.26*s,-.65*s],[.17*s,-.62*s]],'#222',1.8);
  line([[0,-.46*s],[0,.28*s]],'#222',2.6);
  const arm=stroke?phase*.5:0;

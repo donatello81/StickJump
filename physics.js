@@ -15,7 +15,14 @@ export class Game {
   const rotation=this.omega*dt;this.angle+=rotation;this.rotation+=rotation;
   // A full rotation in either direction must be completed before it scores.
   while(Math.abs(this.rotation)>=TAU){this.flips++;this.rotation-=Math.sign(this.rotation)*TAU;this.event={type:'flip',text:'FULL ROTATION +250'};}
-  if(keys.up && this.time-this.strokeAt>.4){this.strokeAt=this.time;this.vx+=Math.cos(this.angle)*3.2;this.event={type:'swim',text:Math.cos(this.angle)>=0?'STROKE →':'← STROKE'};}
+  if(keys.up && this.time-this.strokeAt>.4){
+   this.strokeAt=this.time;
+   // The rendered feet-to-head axis projects onto screen X as sin(angle).
+   // Ignore its vertical component: strokes never add lift or downward force.
+   const horizontal=Math.sin(this.angle);
+   this.vx+=horizontal*3.2;
+   this.event={type:'swim',text:Math.abs(horizontal)<.01?'STROKE · TILT TO MOVE':horizontal>0?'STROKE →':'← STROKE'};
+  }
   this.vx+=(this.wind*.25-this.vx*.65)*dt;this.x+=this.vx*dt;
   const oldY=this.y;this.vy-=9.81*dt;this.y+=this.vy*dt;
   this.peak=Math.max(this.peak,this.y);this.best=Math.max(this.best,this.y);
